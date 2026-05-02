@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.models.schemas import PromptRequest, FirewallResponse
 from app.core.engine import check_prompt  # Make sure this is imported!
+from app.core.sanitizers import sanitize_response
 
 app = FastAPI(title="AI Prompt Injection Firewall")
 
@@ -19,9 +20,19 @@ async def proxy_prompt(request: PromptRequest):
         )
 
     # If it passes, return the success message
+    # return FirewallResponse(
+    #     is_safe=True,
+    #     risk_score=score,
+    #     analysis=msg,
+    #     ai_response="This is a safe response from the AI."
+    # )
+    # Sanitize the AI response before sending it back
+    raw_ai_response = "Hello! You can reach me at support@company.com or call 555-0199."
+    clean_ai_response = sanitize_response(raw_ai_response)
+    
     return FirewallResponse(
         is_safe=True,
         risk_score=score,
         analysis=msg,
-        ai_response="This is a safe response from the AI."
+        ai_response=clean_ai_response # <--- Return the CLEAN version
     )
