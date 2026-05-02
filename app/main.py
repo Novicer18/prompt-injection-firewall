@@ -27,9 +27,9 @@ async def proxy_prompt(request: PromptRequest):
     #     ai_response="This is a safe response from the AI."
     # )
     # Sanitize the AI response before sending it back
-    raw_ai_response = "Hello! You can reach me at support@company.com or call 555-0199."
+    raw_ai_response = "This is a safe response from the AI."  # Placeholder for actual AI response
     clean_ai_response = sanitize_response(raw_ai_response)
-    
+
     return FirewallResponse(
         is_safe=True,
         risk_score=score,
