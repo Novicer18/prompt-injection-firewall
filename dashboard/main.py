@@ -47,12 +47,26 @@ try:
     st.divider()
     c1, c2 = st.columns([2, 1])
     
+    # with c1:
+    #     st.subheader("Threat Activity Timeline")
+    #     # Ensure timestamp is datetime for plotting
+    #     df['timestamp'] = pd.to_datetime(df['timestamp'])
+    #     timeline = df.resample('h', on='timestamp').count()['id'].reset_index()
+    #     fig_line = px.line(timeline, x='timestamp', y='id', title="Blocked Prompts per Hour")
+    #     st.plotly_chart(fig_line, use_container_width=True)
+
+
     with c1:
         st.subheader("Threat Activity Timeline")
-        # Ensure timestamp is datetime for plotting
         df['timestamp'] = pd.to_datetime(df['timestamp'])
-        timeline = df.resample('h', on='timestamp').count()['id'].reset_index()
-        fig_line = px.line(timeline, x='timestamp', y='id', title="Blocked Prompts per Hour")
+        
+        # Using lowercase 'h' and filling missing hours with 0
+        timeline = df.resample('h', on='timestamp').count()['id'].fillna(0).reset_index()
+        timeline.columns = ['timestamp', 'count'] # Rename for clarity
+        
+        fig_line = px.line(timeline, x='timestamp', y='count', 
+                        title="Blocked Prompts per Hour",
+                        template="plotly_dark") # Keep it sleek!
         st.plotly_chart(fig_line, use_container_width=True)
 
     with c2:
